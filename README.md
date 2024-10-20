@@ -59,14 +59,14 @@ npm install
 
 ```bash
 cd backend
-npx ts-node src/index.ts
+npm run dev
 ```
 
 ### Step 4: Start the Angular frontend
 
 ```bash
 cd ../frontend
-ng serve
+npm start
 ```
 
 ### Step 5: Access the application
