@@ -22,6 +22,7 @@
       <p><strong>Booked By:</strong> {{ meeting.name }}</p>
       <p><strong>Start:</strong> {{ formatDate(meeting.startDate) }}</p>
       <p><strong>End:</strong> {{ formatDate(meeting.endDate) }}</p>
+      <p><strong>Duration:</strong> {{ getMeetingDuration(meeting.startDate.toString(), meeting.endDate.toString()) }}</p>
       <p><strong>Status:</strong> {{ meeting.status }}</p>
       <p><strong>Room:</strong> {{ meeting.room?.name }} ({{ meeting.room?.type }}, Capacity: {{ meeting.room?.capacity }})</p>
       <p><strong>Notes:</strong> {{ meeting.notes }}</p>

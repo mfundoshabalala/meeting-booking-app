@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { format } from 'date-fns';
 
-import { Meeting, Priority, Status } from '../../models/meeting.model';
-import { CommonModule } from '@angular/common';
+import { Meeting } from '../../models/meeting.model';
 import { MeetingsService } from '../../services/meetings.service';
-import { FormsModule } from '@angular/forms';
+import { calculateDurationES5 } from '../../utils/duration-util';
 
 @Component({
   selector: 'app-meeting-list',
@@ -52,7 +53,7 @@ export class MeetingListComponent implements OnInit {
     );
   }
 
-  removeMeeting(id: number): void {
+  private removeMeeting(id: number): void {
     this.meetings = this.meetings.filter(meeting => meeting.id != id);
   }
 
@@ -65,4 +66,10 @@ export class MeetingListComponent implements OnInit {
   formatDate(date: Date): string {
     return format(date, 'yyyy-MM-dd HH:mm');
   }
+
+  getMeetingDuration(startDate: string, endDate: string): string {
+    return calculateDurationES5(new Date(startDate), new Date(endDate)); // Use ES5 function
+  }
 }
+
+
