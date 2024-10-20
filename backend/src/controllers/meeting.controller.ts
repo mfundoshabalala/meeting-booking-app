@@ -11,46 +11,67 @@ export class MeetingController {
   }
 
   async getAllMeetings(req: Request, res: Response): Promise<void> {
-    const meetings = await this.meetingService.getAllMeetings();
-    res.json(meetings);
+    try {
+      const meetings = await this.meetingService.getAllMeetings();
+      res.json(meetings);
+    } catch (err) {
+      res.status(500).json({ error: 'Failed to retrieve meetings' });
+    }
   }
 
   async getMeetingById(req: Request, res: Response): Promise<void> {
-    const id = parseInt(req.params.id, 10);
-    const meeting = await this.meetingService.getMeetingById(id);
-    if (meeting) {
-      res.json(meeting);
-    } else {
-      res.status(404).json({ message: 'Meeting not found' });
+    try {
+      const id = parseInt(req.params.id, 10);
+      const meeting = await this.meetingService.getMeetingById(id);
+      if (meeting) {
+        res.json(meeting);
+      } else {
+        res.status(404).json({ error: 'Meeting not found' });
+      }
+    } catch (err) {
+      res.status(500).json({ error: 'Failed to retrieve meeting' });
     }
   }
 
   async createMeeting(req: Request, res: Response): Promise<void> {
-    const meeting: Meeting = req.body;
-    const validationError = validateMeeting(meeting);
-    if (validationError) {
-      res.status(400).json({ error: validationError });
-      return;
+    try {
+      const meeting: Meeting = req.body;
+      const validationError = validateMeeting(meeting);
+      if (validationError) {
+        res.status(400).json({ error: validationError });
+        return;
+      }
+      await this.meetingService.createMeeting(meeting);
+      res.status(201).json({ message: 'Meeting created' });
+    } catch (err) {
+      res.status(500).json({ error: 'Failed to create meeting' });
     }
-    await this.meetingService.createMeeting(meeting);
-    res.status(201).json({ message: 'Meeting created' });
-  }
-
-  async deleteMeeting(req: Request, res: Response): Promise<void> {
-    const id = parseInt(req.params.id, 10);
-    await this.meetingService.deleteMeeting(id);
-    res.json({ message: 'Meeting deleted' });
   }
 
   async updateMeeting(req: Request, res: Response): Promise<void> {
-    const id = parseInt(req.params.id, 10);
-    const meeting: Meeting = req.body;
-    const validationError = validateMeeting(meeting);
-    if (validationError) {
-      res.status(400).json({ error: validationError });
-      return;
+    try {
+      const id = parseInt(req.params.id, 10);
+      const meeting: Meeting = req.body;
+      const validationError = validateMeeting(meeting);
+      if (validationError) {
+        res.status(400).json({ error: validationError });
+        return;
+      }
+      await this.meetingService.updateMeeting(id, meeting);
+      res.json({ message: 'Meeting updated' });
+    } catch (err) {
+      res.status(500).json({ error: 'Failed to update meeting' });
     }
-    await this.meetingService.updateMeeting(id, meeting);
-    res.json({ message: 'Meeting updated' });
+  }
+
+  async deleteMeeting(req: Request, res: Response): Promise<void> {
+    try {
+      const id = parseInt(req.params.id, 10);
+      await this.meetingService.deleteMeeting(id);
+      res.json({ message: 'Meeting deleted' });
+    } catch (err) {
+      res.status(500).json({ error: 'Failed to delete meeting' });
+    }
   }
 }
+
