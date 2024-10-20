@@ -1,19 +1,25 @@
-import sqlite3 from 'sqlite3';
-import { Database, OPEN_READWRITE, OPEN_CREATE } from 'sqlite3';
+import sqlite3, { Database as SQLiteDatabase } from 'sqlite3';
 
-export function openDb(): Promise<Database> {
+let dbInstance: SQLiteDatabase | null = null;
+
+export function openDb(): Promise<SQLiteDatabase> {
   return new Promise((resolve, reject) => {
-    const db = new sqlite3.Database(':memory:', OPEN_READWRITE | OPEN_CREATE, (err) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(db);
-      }
-    });
+    if (dbInstance) {
+      resolve(dbInstance);  // Return the existing database instance
+    } else {
+      const db = new sqlite3.Database(':memory:', sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE, (err) => {
+        if (err) {
+          reject(err);
+        } else {
+          dbInstance = db;  // Store the database instance for reuse
+          resolve(db);
+        }
+      });
+    }
   });
 }
 
-export async function createTables(db: Database) {
+export async function createTables(db: SQLiteDatabase): Promise<void> {
   return new Promise<void>((resolve, reject) => {
     db.run(`
       CREATE TABLE IF NOT EXISTS meetings (
