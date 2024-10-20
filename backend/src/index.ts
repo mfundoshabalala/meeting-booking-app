@@ -1,7 +1,12 @@
 import express from 'express';
+import { openDb, createTables } from './database/db';
 
 const app = express();
 app.use(express.json());
 
 const PORT = 3000;
-app.listen(PORT, () => console.info(`Server running on port ${PORT}`));
+
+openDb().then(async (db) => {
+  await createTables(db);
+  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+});
