@@ -1,1 +1,19 @@
-<p>meeting-list works!</p>
+<div class="container mx-auto p-4">
+  <h2 class="text-2xl font-bold mb-4">Meeting List</h2>
+
+  @if (meetings.length === 0) {
+    <p>No meetings available.</p>
+  }
+
+  @for (meeting of meetings; track meeting.id) {
+    <div class="border rounded-lg p-4 mb-4">
+      <h3 class="font-semibold text-lg">{{ meeting.title }} ({{ meeting.priority }})</h3>
+      <p><strong>Booked By:</strong> {{ meeting.name }}</p>
+      <p><strong>Start:</strong> {{ formatDate(meeting.startDate) }}</p>
+      <p><strong>End:</strong> {{ formatDate(meeting.endDate) }}</p>
+      <p><strong>Status:</strong> {{ meeting.status }}</p>
+      <p><strong>Room:</strong> {{ meeting.room?.name }} ({{ meeting.room?.type }}, Capacity: {{ meeting.room?.capacity }})</p>
+      <p><strong>Notes:</strong> {{ meeting.notes }}</p>
+    </div>
+  }
+</div>
