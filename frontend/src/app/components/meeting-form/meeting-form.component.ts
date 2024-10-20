@@ -6,6 +6,7 @@ import { format } from 'date-fns';
 
 import { Meeting, Priority, Room, Status } from '../../models/meeting.model';
 import { MeetingsService } from '../../services/meetings.service';
+import { RoomsService } from '../../services/rooms.service';
 
 @Component({
   selector: 'app-meeting-form',
@@ -18,24 +19,20 @@ export class MeetingFormComponent {
   meetingForm!: FormGroup;
   statusOptions = Object.values(Status);
   priorityOptions = Object.values(Priority);
-  rooms: Room[] = [
-    { id: 101, name: 'Meeting Room A', capacity: 10, type: 'Meeting Room' },
-    { id: 102, name: 'Boardroom (VC 1)', capacity: 20, type: 'Boardroom' },
-    { id: 103, name: 'Meeting Room B', capacity: 15, type: 'Meeting Room' },
-    { id: 104, name: 'Meeting Room C', capacity: 10, type: 'Meeting Room' },
-    { id: 105, name: 'Meeting Room D', capacity: 10, type: 'Meeting Room' },
-    { id: 106, name: 'Boardroom (VC 2)', capacity: 20, type: 'Boardroom' },
-  ];
+  rooms: Room[] = [];
   meetingId: number | null = null;
 
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,
     private route: ActivatedRoute,
-    private meetingsService: MeetingsService
+    private meetingsService: MeetingsService,
+    private roomsService: RoomsService
   ) {}
 
   ngOnInit() {
+    this.loadRooms();
+
     this.meetingId = Number(this.route.snapshot.paramMap.get('id'));
     this.meetingForm = this.formBuilder.group({
       title: ['', Validators.required],
@@ -47,10 +44,19 @@ export class MeetingFormComponent {
       notes: [''],
       roomId: ['', Validators.required]
     });
+
     if (this.meetingId) {
       this.loadMeetingForEdit(this.meetingId);
     }
   }
+
+  private loadRooms(): void {
+    this.roomsService.getRooms().subscribe({
+      next: (rooms: Room[]) => this.rooms = rooms,
+      error: (error: any) => console.error(error),
+      complete: () => console.log('Rooms loaded')
+    });
+  };
 
   private loadMeetingForEdit(id: number): void {
     this.meetingsService.getMeeting(id).subscribe({
