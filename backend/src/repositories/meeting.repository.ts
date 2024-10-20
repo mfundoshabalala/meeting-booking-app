@@ -1,4 +1,3 @@
-import { Database } from 'sqlite3';
 import { Meeting } from '../models/meeting.model';
 import { openDb } from '../database/db';
 
