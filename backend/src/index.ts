@@ -1,4 +1,5 @@
 import express from 'express';
+import morgan from 'morgan';
 import { MeetingController } from './controllers/meeting.controller';
 import { openDb, createTables } from './database/db';
 
@@ -6,6 +7,7 @@ const app = express();
 const meetingController = new MeetingController();
 
 app.use(express.json());
+app.use(morgan('combined'));
 
 // Define routes
 app.get('/meetings', (req, res) => meetingController.getAllMeetings(req, res));
@@ -16,7 +18,7 @@ app.delete('/meetings/:id', (req, res) => meetingController.deleteMeeting(req, r
 
 const PORT = 3000;
 
-// Open the database and create the tables before starting the server
+// NOTE: Open the database and create the tables before starting the server
 openDb()
   .then(async (db) => {
     await createTables(db);  // Ensure tables are created
