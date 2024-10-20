@@ -64,7 +64,8 @@ export class MeetingListComponent implements OnInit {
   deleteMeeting(id: number): void {
     this.meetingsService.deleteMeeting(id).subscribe(
       {
-        next: () => this.removeMeeting(id),
+        // next: () => this.removeMeeting(id),
+        next: () => this.loadMeetings(),
         error: (error: any) => console.error(error),
         complete: () => console.log('Meeting deleted')
       }

@@ -77,6 +77,13 @@ export class MeetingFormComponent {
     });
   }
 
+  hasValidDateRange(): boolean {
+    const startDate = new Date(this.meetingForm.value.startDate);
+    const endDate = new Date(this.meetingForm.value.endDate);
+
+    return startDate < endDate;
+  }
+
   onSubmit() {
     if (this.meetingForm.valid) {
       const newMeeting: Meeting = {

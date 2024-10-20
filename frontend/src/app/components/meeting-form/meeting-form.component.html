@@ -1,55 +1,80 @@
 <div class="container mx-auto p-4">
-  <h2 class="text-2xl font-bold mb-4">Add/Edit Meeting</h2>
+  <h2 class="text-3xl font-bold mb-6 text-gray-700">Add/Edit Meeting</h2>
 
-  <form [formGroup]="meetingForm" (ngSubmit)="onSubmit()" class="space-y-4">
-    <div>
-      <label for="title" class="block font-medium">Meeting Title</label>
-      <input id="title" formControlName="title" class="form-input mt-1 block border-2 rounded" type="text" placeholder="Enter meeting title" />
+  <form [formGroup]="meetingForm" (ngSubmit)="onSubmit()" class="space-y-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+      <!-- Meeting Title -->
+      <div>
+        <label for="title" class="block font-medium text-gray-700">Meeting Title</label>
+        <input id="title" formControlName="title"
+          class="form-input mt-1 block w-full border-2 rounded-md text-gray-700"
+          type="text" placeholder="Enter meeting title" />
+        <p *ngIf="meetingForm.controls['title'].invalid && meetingForm.controls['title'].touched"
+          class="text-red-500 text-sm mt-1">Meeting title is required.</p>
+      </div>
+
+      <!-- Name -->
+      <div>
+        <label for="name" class="block font-medium text-gray-700">Name</label>
+        <input id="name" formControlName="name"
+          class="form-input mt-1 block w-full border-2 rounded-md text-gray-700"
+          type="text" placeholder="Enter your name" />
+        <p *ngIf="meetingForm.controls['name'].invalid && meetingForm.controls['name'].touched"
+          class="text-red-500 text-sm mt-1">Name is required.</p>
+      </div>
+
+      <!-- Start Date & Time -->
+      <div>
+        <label for="startDate" class="block font-medium text-gray-700">Start Date & Time</label>
+        <input id="startDate" formControlName="startDate"
+          class="form-input mt-1 block w-full border-2 rounded-md text-gray-700"
+          type="datetime-local" />
+        <p *ngIf="meetingForm.controls['startDate'].invalid && meetingForm.controls['startDate'].touched"
+          class="text-red-500 text-sm mt-1">Start date & time is required.</p>
+      </div>
+
+      <!-- End Date & Time -->
+      <div>
+        <label for="endDate" class="block font-medium text-gray-700">End Date & Time</label>
+        <input id="endDate" formControlName="endDate" class="form-input mt-1 block w-full border-2 rounded-md text-gray-700" type="datetime-local" />
+        <p *ngIf="meetingForm.controls['endDate'].invalid && meetingForm.controls['endDate'].touched"
+          class="text-red-500 text-sm mt-1">End date & time is required.</p>
+      </div>
+
+      <!-- Status -->
+      <div>
+        <label for="status" class="block font-medium text-gray-700">Status</label>
+        <select id="status" formControlName="status" class="form-select mt-1 block w-full border-2 rounded-md text-gray-700">
+          <option *ngFor="let status of statusOptions" [value]="status">{{ status }}</option>
+        </select>
+      </div>
+
+      <!-- Priority -->
+      <div>
+        <label for="priority" class="block font-medium text-gray-700">Priority</label>
+        <select id="priority" formControlName="priority" class="form-select mt-1 block w-full border-2 rounded-md text-gray-700">
+          <option *ngFor="let priority of priorityOptions" [value]="priority">{{ priority }}</option>
+        </select>
+      </div>
+
+      <!-- Meeting Room -->
+      <div>
+        <label for="roomId" class="block font-medium text-gray-700">Meeting Room</label>
+        <select id="roomId" formControlName="roomId" class="form-select mt-1 block w-full border-2 rounded-md text-gray-700">
+          <option *ngFor="let room of rooms" [value]="room.id">{{ room.name }} (Capacity: {{ room.capacity }})</option>
+        </select>
+      </div>
     </div>
 
+    <!-- Notes: Full-width Textarea -->
     <div>
-      <label for="name" class="block font-medium">Name</label>
-      <input id="name" formControlName="name" class="form-input mt-1 block border-2 rounded" type="text" placeholder="Enter your name" />
+      <label for="notes" class="block font-medium text-gray-700">Notes</label>
+      <textarea id="notes" formControlName="notes" class="form-textarea mt-1 block w-full border-2 rounded-md text-gray-700" rows="5" placeholder="Additional notes"></textarea>
     </div>
 
-    <div>
-      <label for="startDate" class="block font-medium">Start Date & Time</label>
-      <input id="startDate" formControlName="startDate" class="form-input mt-1 block border-2 rounded" type="datetime-local" />
-    </div>
-
-    <div>
-      <label for="endDate" class="block font-medium">End Date & Time</label>
-      <input id="endDate" formControlName="endDate" class="form-input mt-1 block border-2 rounded" type="datetime-local" />
-    </div>
-
-    <div>
-      <label for="status" class="block font-medium">Status</label>
-      <select id="status" formControlName="status" class="form-select block mt-1 border-2 rounded">
-        <option *ngFor="let status of statusOptions" [value]="status">{{ status }}</option>
-      </select>
-    </div>
-
-    <div>
-      <label for="priority" class="block font-medium">Priority</label>
-      <select id="priority" formControlName="priority" class="form-select block mt-1 border-2 rounded">
-        <option *ngFor="let priority of priorityOptions" [value]="priority">{{ priority }}</option>
-      </select>
-    </div>
-
-    <div>
-      <label for="roomId" class="block font-medium">Meeting Room</label>
-      <select id="roomId" formControlName="roomId" class="form-select block mt-1 border-2 rounded">
-        <option *ngFor="let room of rooms" [value]="room.id">{{ room.name }} (Capacity: {{ room.capacity }})</option>
-      </select>
-    </div>
-
-    <div>
-      <label for="notes" class="block font-medium">Notes</label>
-      <textarea id="notes" formControlName="notes" class="form-textarea mt-1 block border-2 rounded" rows="5" placeholder="Additional notes"></textarea>
-    </div>
-
+    <!-- Submit Button -->
     <button type="submit"
-      class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 cursor-pointer"
+      class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition-all"
       [disabled]="meetingForm.invalid">
       Save Meeting
     </button>
