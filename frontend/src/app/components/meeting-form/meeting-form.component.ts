@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { format } from 'date-fns';
 
 import { Meeting, Priority, Room, Status } from '../../models/meeting.model';
+import { MeetingsService } from '../../services/meetings.service';
 
 @Component({
   selector: 'app-meeting-form',
@@ -27,7 +28,12 @@ export class MeetingFormComponent {
   ];
   meetingId: number | null = null;
 
-  constructor(private formBuilder: FormBuilder, private route: ActivatedRoute) {}
+  constructor(
+    private formBuilder: FormBuilder,
+    private router: Router,
+    private route: ActivatedRoute,
+    private meetingsService: MeetingsService
+  ) {}
 
   ngOnInit() {
     this.meetingId = Number(this.route.snapshot.paramMap.get('id'));
@@ -47,20 +53,14 @@ export class MeetingFormComponent {
   }
 
   private loadMeetingForEdit(id: number): void {
-    // FIXME: Replace this with an API call to fetch meeting details by ID
-    const mockMeeting: Meeting = {
-      id: id,
-      title: 'Project Kickoff',
-      name: 'John Doe',
-      startDate: new Date(),
-      endDate: new Date(),
-      status: Status.Scheduled,
-      priority: Priority.High,
-      notes: 'Discuss project scope and milestones',
-      roomId: 101,
-      room: { id: 101, name: 'Meeting Room A', capacity: 10, type: 'Meeting Room' }
-    };
+    this.meetingsService.getMeeting(id).subscribe({
+      next: (meeting: Meeting) => this.populateForm(meeting),
+      error: (error: any) => console.error('Error loading meeting for edit:', error),
+      complete: () => console.log('Meeting loaded')
+    });
+  }
 
+  private populateForm(mockMeeting: Meeting): void {
     const formattedStartDate = format(mockMeeting.startDate, "yyyy-MM-dd'T'HH:mm");
     const formattedEndDate = format(mockMeeting.endDate, "yyyy-MM-dd'T'HH:mm");
 
@@ -79,7 +79,26 @@ export class MeetingFormComponent {
         endDate: new Date(this.meetingForm.value.endDate),
         room: this.rooms.find(room => room.id == this.meetingForm.value.roomId)
       };
-      console.log('Meeting Saved:', newMeeting);
+
+      if (this.meetingId) {
+        this.meetingsService.updateMeeting(this.meetingId, newMeeting).subscribe({
+          next: () => console.log('Meeting updated'),
+          error: (error: any) => console.error(error),
+          complete: () => {
+            console.log('Meeting update complete');
+            this.router.navigate(['/meetings']);
+          }
+        });
+      } else {
+        this.meetingsService.createMeeting(newMeeting).subscribe({
+          next: () => console.log('Meeting created'),
+          error: (error: any) => console.error(error),
+          complete: () => {
+            console.log('Meeting creation complete');
+            this.router.navigate(['/meetings']);
+          }
+        });
+      }
     }
   }
 }

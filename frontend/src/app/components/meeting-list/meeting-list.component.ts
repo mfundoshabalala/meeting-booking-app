@@ -4,6 +4,7 @@ import { format } from 'date-fns';
 
 import { Meeting, Priority, Status } from '../../models/meeting.model';
 import { CommonModule } from '@angular/common';
+import { MeetingsService } from '../../services/meetings.service';
 
 @Component({
   selector: 'app-meeting-list',
@@ -15,37 +16,30 @@ import { CommonModule } from '@angular/common';
 export class MeetingListComponent implements OnInit {
   meetings: Meeting[] = [];
 
+  constructor(private meetingsService: MeetingsService) {}
+
   ngOnInit() {
-    this.meetings = [
+    this.meetingsService.getMeetings().subscribe(
       {
-        id: 1,
-        title: 'Project Kickoff',
-        name: 'John Doe',
-        startDate: new Date(),
-        endDate: new Date(),
-        status: Status.Scheduled,
-        priority: Priority.High,
-        notes: 'Discuss project scope and milestones',
-        roomId: 101,
-        room: { id: 101, name: 'Meeting Room A', capacity: 10, type: 'Meeting Room' }
-      },
-      {
-        id: 2,
-        title: 'Budget Review',
-        name: 'Jane Smith',
-        startDate: new Date(),
-        endDate: new Date(),
-        status: Status.Ongoing,
-        priority: Priority.Medium,
-        notes: 'Review the quarterly budget',
-        roomId: 102,
-        room: { id: 102, name: 'Boardroom (VC)', capacity: 20, type: 'Boardroom' }
+        next: (meetings: Meeting[]) => this.meetings = meetings,
+        error: (error: any) => console.error(error),
+        complete: () => console.log('Meetings loaded')
       }
-    ];
+    );
   }
 
   deleteMeeting(id: number): void {
-    this.meetings = this.meetings.filter(meeting => meeting.id !== id);
+    this.meetingsService.deleteMeeting(id).subscribe(
+      {
+        next: () => this.removeMeeting(id),
+        error: (error: any) => console.error(error),
+        complete: () => console.log('Meeting deleted')
+      }
+    );
+  }
+
+  removeMeeting(id: number): void {
+    this.meetings = this.meetings.filter(meeting => meeting.id != id);
   }
 
   confirmDelete(id: number): void {
