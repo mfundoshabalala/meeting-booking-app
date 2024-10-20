@@ -1,0 +1,14 @@
+<header>
+  <!-- <h1>iMeet</h1> -->
+  <nav>
+    <ul class="flex w-full gap-4">
+      @for (navItem of navigation; track navItem.name) {
+      <li>
+        <a
+          routerLink="{{navItem.link}}" routerLinkActive="active"
+          ariaCurrentWhenActive="page">{{navItem.name}}</a>
+      </li>
+      }
+    </ul>
+  </nav>
+</header>

@@ -3,7 +3,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
 html, body {
   height: 100%;
   margin: 0;
@@ -11,8 +10,26 @@ html, body {
   font-family: 'Roboto', sans-serif;
 }
 
-app-root {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
+header {
+  @apply flex flex-wrap justify-around shadow-sm w-full px-8 py-10;
+}
+
+nav {
+  @apply flex justify-center items-center;
+}
+
+h1 {
+  @apply text-center py-8 px-16 text-xl md:text-3xl font-semibold;
+}
+
+h2 {
+  @apply text-center py-6 px-12 text-lg md:text-xl font-medium;
+}
+
+footer {
+  @apply text-center py-8 text-sm;
+}
+
+a {
+  @apply text-blue-500 hover:text-blue-700 hover:underline;
 }
