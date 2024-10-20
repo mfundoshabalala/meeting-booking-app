@@ -8,6 +8,7 @@ html, body {
   margin: 0;
   padding: 0;
   font-family: 'Roboto', sans-serif;
+  @apply text-slate-950 bg-slate-100;
 }
 
 header {
