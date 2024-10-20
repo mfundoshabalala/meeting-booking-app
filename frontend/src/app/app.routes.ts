@@ -4,8 +4,9 @@ import { MeetingFormComponent } from './components/meeting-form/meeting-form.com
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
 
 export const routes: Routes = [
-  { path: 'meeting-list', component: MeetingListComponent },
-  { path: 'meeting-add', component: MeetingFormComponent },
-  { path: '', redirectTo: '/meeting-list', pathMatch: 'full' },
+  { path: 'meetings', component: MeetingListComponent },
+  { path: 'meetings/new', component: MeetingFormComponent },
+  { path: 'meetings/edit/:id', component: MeetingFormComponent },
+  { path: '', redirectTo: '/meetings', pathMatch: 'full' },
   { path: '**', component: PageNotFoundComponent },
 ];

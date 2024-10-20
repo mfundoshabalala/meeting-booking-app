@@ -1,12 +1,14 @@
 import { Component, OnInit } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { format } from 'date-fns';
 
 import { Meeting, Priority, Status } from '../../models/meeting.model';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-meeting-list',
   standalone: true,
-  imports: [],
+  imports: [CommonModule, RouterLink],
   templateUrl: './meeting-list.component.html',
   styleUrl: './meeting-list.component.css'
 })
@@ -40,6 +42,16 @@ export class MeetingListComponent implements OnInit {
         room: { id: 102, name: 'Boardroom (VC)', capacity: 20, type: 'Boardroom' }
       }
     ];
+  }
+
+  deleteMeeting(id: number): void {
+    this.meetings = this.meetings.filter(meeting => meeting.id !== id);
+  }
+
+  confirmDelete(id: number): void {
+    if (confirm('Are you sure you want to delete this meeting?')) {
+      this.deleteMeeting(id);
+    }
   }
 
   formatDate(date: Date): string {

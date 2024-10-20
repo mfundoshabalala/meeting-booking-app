@@ -11,11 +11,11 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 export class HeaderComponent {
   navigation = [
     {
-      link: "/meeting-list",
+      link: "/meetings",
       name: "Meeting List"
     },
     {
-      link: "/meeting-add",
+      link: "/meetings/new",
       name: "Add Meeting"
     }
   ]

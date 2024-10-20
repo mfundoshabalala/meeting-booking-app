@@ -1,7 +1,10 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Meeting, Priority, Room, Status } from '../../models/meeting.model';
 import { CommonModule } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
+import { format } from 'date-fns';
+
+import { Meeting, Priority, Room, Status } from '../../models/meeting.model';
 
 @Component({
   selector: 'app-meeting-form',
@@ -22,10 +25,12 @@ export class MeetingFormComponent {
     { id: 105, name: 'Meeting Room D', capacity: 10, type: 'Meeting Room' },
     { id: 106, name: 'Boardroom (VC 2)', capacity: 20, type: 'Boardroom' },
   ];
+  meetingId: number | null = null;
 
-  constructor(private formBuilder: FormBuilder) {}
+  constructor(private formBuilder: FormBuilder, private route: ActivatedRoute) {}
 
   ngOnInit() {
+    this.meetingId = Number(this.route.snapshot.paramMap.get('id'));
     this.meetingForm = this.formBuilder.group({
       title: ['', Validators.required],
       name: ['', Validators.required],
@@ -35,6 +40,34 @@ export class MeetingFormComponent {
       priority: [Priority.Medium, Validators.required],
       notes: [''],
       roomId: ['', Validators.required]
+    });
+    if (this.meetingId) {
+      this.loadMeetingForEdit(this.meetingId);
+    }
+  }
+
+  private loadMeetingForEdit(id: number): void {
+    // FIXME: Replace this with an API call to fetch meeting details by ID
+    const mockMeeting: Meeting = {
+      id: id,
+      title: 'Project Kickoff',
+      name: 'John Doe',
+      startDate: new Date(),
+      endDate: new Date(),
+      status: Status.Scheduled,
+      priority: Priority.High,
+      notes: 'Discuss project scope and milestones',
+      roomId: 101,
+      room: { id: 101, name: 'Meeting Room A', capacity: 10, type: 'Meeting Room' }
+    };
+
+    const formattedStartDate = format(mockMeeting.startDate, "yyyy-MM-dd'T'HH:mm");
+    const formattedEndDate = format(mockMeeting.endDate, "yyyy-MM-dd'T'HH:mm");
+
+    this.meetingForm.patchValue({
+      ...mockMeeting,
+      startDate: formattedStartDate,
+      endDate: formattedEndDate
     });
   }
 
