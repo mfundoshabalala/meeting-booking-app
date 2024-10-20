@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { MeetingService } from '../services/meeting.service';
 import { Meeting } from '../models/meeting.model';
+import { validateMeeting } from '../utils/validation';
 
 export class MeetingController {
   private meetingService: MeetingService;
@@ -26,6 +27,11 @@ export class MeetingController {
 
   async createMeeting(req: Request, res: Response): Promise<void> {
     const meeting: Meeting = req.body;
+    const validationError = validateMeeting(meeting);
+    if (validationError) {
+      res.status(400).json({ error: validationError });
+      return;
+    }
     await this.meetingService.createMeeting(meeting);
     res.status(201).json({ message: 'Meeting created' });
   }
@@ -39,6 +45,11 @@ export class MeetingController {
   async updateMeeting(req: Request, res: Response): Promise<void> {
     const id = parseInt(req.params.id, 10);
     const meeting: Meeting = req.body;
+    const validationError = validateMeeting(meeting);
+    if (validationError) {
+      res.status(400).json({ error: validationError });
+      return;
+    }
     await this.meetingService.updateMeeting(id, meeting);
     res.json({ message: 'Meeting updated' });
   }
